@@ -341,7 +341,7 @@ def run_suite():
     print(q7_total_cost.format_output())
     print("-" * 40)
 
-        # 9. Challenge: details of products stored in warehouse 1
+    # 9. Challenge: details of products stored in warehouse 1
     print("Query : Challenge - Products stored in warehouse 1")
 
     # Step A: filter Warehouse by IDW = 1
