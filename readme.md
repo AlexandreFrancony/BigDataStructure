@@ -1,5 +1,4 @@
 # Big Data Structure
-==================
 
 This repository contains the coursework and project code for the **Big Data Structure** module at ESILV. Its main goal is to model and simulate how different NoSQL data models and infrastructures impact **performance**, **carbon footprint**, and **financial cost**.
 
