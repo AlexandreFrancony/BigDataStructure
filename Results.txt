@@ -1,0 +1,135 @@
+=== DVL OPERATOR OPERATIONAL REPORT ===
+
+Query : Q1 - Filter Stock on IDW (Sharded & Indexed)
+Database : DB1
+Sharding keys : IDW
+Index : IDW
+Algo : Shard / Index
+    Costs :
+        nodes involved : 1
+        data read      : 0.000041 MB
+        data transfer  : 0.000000 MB
+        time read      : 0.000000 s
+        time transfer  : 0.000000 s
+        total time     : 0.000000 s
+        energy         : 0.000000000 kWh
+        carbon footprint : 0.000000 g
+        price          : 0.000000 €
+
+----------------------------------------
+Query : Q2 - Filter Product on brand (Full Scan)
+Database : DB1
+Sharding keys : None
+Index : None
+Algo : Full scan
+    Costs :
+        nodes involved : 1000
+        data read      : 105.667114 MB
+        data transfer  : 0.000000 MB
+        time read      : 1.056671 s
+        time transfer  : 0.000000 s
+        total time     : 0.001057 s
+        energy         : 0.000058704 kWh
+        carbon footprint : 0.002935 g
+        price          : 0.000009 €
+
+----------------------------------------
+Query : Q3 - Join Product and OrderLine on IDP (Collocated)
+Database : DB1
+Sharding keys : IDP, IDP
+Index : None
+Algo : Shard / Nested Loop
+    Costs :
+        nodes involved : 1000
+        data read      : 1480208.206177 MB
+        data transfer  : 0.000000 MB
+        time read      : 14802.082062 s
+        time transfer  : 0.000000 s
+        total time     : 14.802082 s
+        energy         : 0.822337892 kWh
+        carbon footprint : 41.116895 g
+        price          : 0.123351 €
+
+----------------------------------------
+Query : Q4 - Join Product and OrderLine on IDP (Local)
+Database : DB1
+Sharding keys : None
+Index : None
+Algo : Nested Loop
+    Costs :
+        nodes involved : 1
+        data read      : 1480208.206177 MB
+        data transfer  : 0.000000 MB
+        time read      : 14802.082062 s
+        time transfer  : 0.000000 s
+        total time     : 14802.082062 s
+        energy         : 0.822337892 kWh
+        carbon footprint : 41.116895 g
+        price          : 0.123351 €
+
+----------------------------------------
+Query : Q5 - DB5: Filter Product (Embedded Orderlines)
+Database : DB5
+Sharding keys : IDP
+Index : IDP
+Algo : Shard / Index
+    Costs :
+        nodes involved : 1
+        data read      : 14.802181 MB
+        data transfer  : 0.000000 MB
+        time read      : 0.148022 s
+        time transfer  : 0.000000 s
+        total time     : 0.148022 s
+        energy         : 0.000008223 kWh
+        carbon footprint : 0.000411 g
+        price          : 0.000001 €
+
+----------------------------------------
+Query : Q6 - 100 most ordered products (Aggregate + Join)
+Database : DB1
+Sharding keys : IDP, IDC
+Algo : Map/Reduce Aggregate + Shard Join
+    Costs :
+        nodes involved : 1000
+        data read      : 1480217.742920 MB
+        data transfer  : 740051.269531 MB
+        time read      : 14802.177429 s
+        time transfer  : 74005.126953 s
+        total time     : 88.807304 s
+        energy         : 4.933739132 kWh
+        carbon footprint : 246.686957 g
+        price          : 0.740061 €
+
+----------------------------------------
+Query : Q7 - Most ordered product by customer 125 (Filter + Aggregate + Join)
+Database : DB1
+Sharding keys : IDP, IDC
+Algo : Shard Filter + M/R Aggregate + Shard Join
+    Costs :
+        nodes involved : 1000
+        data read      : 1480208.392334 MB
+        data transfer  : 0.222015 MB
+        time read      : 14802.083923 s
+        time transfer  : 0.022202 s
+        total time     : 14.802106 s
+        energy         : 0.822339229 kWh
+        carbon footprint : 41.116961 g
+        price          : 0.123351 €
+
+----------------------------------------
+Query : Challenge - Products stored in warehouse 1
+Database : DB1
+Sharding keys : IDW, IDP
+Algo : Shard Filter (Warehouse) + Map/Reduce & Nested Loop Join (Warehouse–Stock on IDW)
+    Costs :
+        nodes involved : 1000
+        data read      : 4.085805 MB
+        data transfer  : 0.000263 MB
+        time read      : 0.040858 s
+        time transfer  : 0.000026 s
+        total time     : 0.000041 s
+        energy         : 0.000002271 kWh
+        carbon footprint : 0.000114 g
+        price          : 0.000000 €
+
+----------------------------------------
