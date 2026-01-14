@@ -341,5 +341,41 @@ def run_suite():
     print(q7_total_cost.format_output())
     print("-" * 40)
 
+        # 9. Challenge: details of products stored in warehouse 1
+    print("Query : Challenge - Products stored in warehouse 1")
+
+    # Step A: filter Warehouse by IDW = 1
+    # 200 warehouses -> selectivity ≈ 1/200
+    q_ch_a = simulate_filter(
+        db1,
+        "Warehouse",
+        "IDW",
+        selectivity=1/200,
+        sharding_key="IDW",
+        has_index=True,  # index on IDW
+    )
+
+    # Step B: join Warehouse result with Stock on IDW
+    # Sharding strategy: Stock(#idP), Warehouse(#idW)
+    # -> non collocated join on IDW (Map/Reduce & Nested Loop)
+    q_ch_b = simulate_join(
+        db1,
+        coll_outer="Warehouse",
+        coll_inner="Stock",
+        join_key="IDW",
+        sharding_info={"outer": "IDW", "inner": "IDP"},
+        outer_input=q_ch_a,
+        inner_input=None,  # Stock taken as full collection
+    )
+
+    # Total costs
+    q_ch_total = q_ch_a["Costs"].add(q_ch_b["Costs"])
+
+    print("Database : DB1")
+    print("Sharding keys : IDW, IDP")
+    print("Algo : Shard Filter (Warehouse) + Map/Reduce & Nested Loop Join (Warehouse–Stock on IDW)")
+    print(q_ch_total.format_output())
+    print("-" * 40)
+
 if __name__ == "__main__":
     run_suite()
