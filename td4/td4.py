@@ -1,3 +1,4 @@
+from pathlib import Path
 import json
 import math
 
@@ -72,13 +73,27 @@ class CostResult:
         self.price_eur = price_eur
 
     def add(self, other):
-        return CostResult(self.time_s + other.time_s, self.carbon_g + other.carbon_g, self.price_eur + other.price_eur)
+        return CostResult(
+            self.time_s + other.time_s,
+            self.carbon_g + other.carbon_g,
+            self.price_eur + other.price_eur,
+        )
 
     def format_output(self):
-        return (f"    Costs :\n"
-                f"        time : {self.time_s:.6f} s\n"
-                f"        carbon footprint : {self.carbon_g:.6f} g\n"
-                f"        price : {self.price_eur:.6f} €")
+        # coût par heure équivalent, en supposant 1 exécution
+        cost_per_hour = (3600 / self.time_s) * self.price_eur if self.time_s > 0 else 0
+        # coût pour 1000 exécutions
+        cost_per_1000 = self.price_eur * 1000
+
+        return (
+            "    Costs :\n"
+            f"        time : {self.time_s:.6f} s\n"
+            f"        carbon footprint : {self.carbon_g:.6f} g\n"
+            f"        price : {self.price_eur:.6f} € "
+            f"(for 1 execution, {cost_per_1000:.6f} € for 1000 exec.)\n"
+            f"        equivalent hourly rate : {cost_per_hour:.6f} €/h\n"
+        )
+
 
 def calculate_costs(data_read_bytes, data_transfer_bytes, nodes_involved):
     time_read = data_read_bytes / IO_SPEED_BYTES_S
@@ -246,41 +261,61 @@ def print_result(res, name):
     print("-" * 40)
 
 def run_suite():
+    # Dossier du fichier td4.py
+    td4_dir = Path(__file__).resolve().parent
+    # Racine du projet = parent de td4/
+    project_root = td4_dir.parent
+    data_root = project_root / "data"
+
     # Setup DB1
-    stats_DB1 = {"Product": 100000, "Stock": 21000, "Warehouse": 200, "OrderLine": 4_000_000_000, "Client": 10_000_000}
-    root = "c:/Users/Léonard/Documents/travail/esilv/A5/Big data structure/"
-    colls_DB1 = {n: Collection(n, f"{root}{n.lower()}.json", c) for n, c in stats_DB1.items()}
+    stats_DB1 = {
+        "Product": 100000,
+        "Stock": 21000,
+        "Warehouse": 200,
+        "OrderLine": 4_000_000_000,
+        "Client": 10_000_000,
+    }
+
+    # Fichiers JSON de DB1 dans data/
+    colls_DB1 = {
+        n: Collection(n, data_root / f"{n.lower()}.json", c)
+        for n, c in stats_DB1.items()
+    }
     db1 = Database("DB1", colls_DB1)
 
     # Setup DB5
     stats_DB5_prod = {"categories": 2, "orderlines": 40000}
+    db5_root = data_root / "DB5"
+
     colls_DB5 = {
-        "Product": Collection("Product", f"{root}DB5/product.json", 100000, stats_DB5_prod),
-        "Stock": colls_DB1["Stock"], "Warehouse": colls_DB1["Warehouse"], "Client": colls_DB1["Client"]
+        "Product": Collection("Product", db5_root / "product.json", 100000, stats_DB5_prod),
+        "Stock": colls_DB1["Stock"],
+        "Warehouse": colls_DB1["Warehouse"],
+        "Client": colls_DB1["Client"],
     }
     db5 = Database("DB5", colls_DB5)
 
     print("=== DVL OPERATOR OPERATIONAL REPORT ===\n")
 
     # 1. Filter with sharding
-    r1 = simulate_filter(db1, "Product", "IDP", 0.0001, "IDP", True)
-    print_result(r1, "Filter Product on IDP (Sharded & Indexed)")
+    r1 = simulate_filter(db1, "Stock", "IDW", 0.0001, sharding_key="IDW", has_index=True)
+    print_result(r1, "Query : Q1 - Filter Stock on IDW (Sharded & Indexed)")
 
     # 2. Filter without sharding
     r2 = simulate_filter(db1, "Product", "brand", 0.02, None, False)
-    print_result(r2, "Filter Product on brand (Full Scan)")
+    print_result(r2, "Query : Q2 - Filter Product on brand (Full Scan)")
 
     # 3. Nested loop with sharding (Collocated)
     r3 = simulate_join(db1, "Product", "OrderLine", "IDP", {"outer": "IDP", "inner": "IDP"})
-    print_result(r3, "Join Product and OrderLine on IDP (Collocated)")
+    print_result(r3, "Query : Q3 - Join Product and OrderLine on IDP (Collocated)")
 
     # 4. Nested loop without sharding (Non-sharded DB)
     r4 = simulate_join(db1, "Product", "OrderLine", "IDP", None)
-    print_result(r4, "Join Product and OrderLine on IDP (Local)")
+    print_result(r4, "Query : Q4 - Join Product and OrderLine on IDP (Local)")
 
     # 5. DB5 Filter (Embedded)
     r5 = simulate_filter(db5, "Product", "IDP", 0.0001, "IDP", True)
-    print_result(r5, "DB5: Filter Product (Embedded Orderlines)")
+    print_result(r5, "Query : Q5 - DB5: Filter Product (Embedded Orderlines)")
 
     # 7. Q6: 100 most ordered product names (Aggregate + Join)
     print("Query : Q6 - 100 most ordered products (Aggregate + Join)")
