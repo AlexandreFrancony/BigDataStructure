@@ -1,0 +1,33 @@
+Submit a package with several operators on DVL which automatizes the previous steps:
+• Operators:
+– Filter with sharding;
+– Filter without sharding;
+– Nested loop with sharding;
+– Nested loop without sharding.
+• Each takes as input:
+– The targeted collection (link with the structure/object defined in the previous program / JSON Schema);
+– The expected output format (involved keys);
+– The filtered key;
+Optionally, the filter selectivity could be provided (by default, take the one computed in Section ??).
+• Provides in output:
+– The number of output documents (and corresponding size);
+– The costs.
+• It should be recommended to provide functions that compute different type of costs which estimates the vol-
+ume of data, etc.
+• Not required: a program that translates a query into operators and parameters (it can be a bonus);
+Test your program with the filter & join queries provided during the practice work (and the previous JSON
+Schema).
+As usual, you will be evaluated on your knowledge about the program you have developed during the next
+session. You have to be able to explain it.
+
+
+For each query, give:
+
+Database : DB1 - DB5
+Sharding keys : Involved sharding key(s)
+Index : Implied/Required index locally on each server
+Algo : Map/Reduce & Nested Loop & Shard / Index / Full scan
+Costs :
+    time :
+    carbon footprint :
+    price :

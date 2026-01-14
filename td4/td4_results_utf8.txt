@@ -1,0 +1,70 @@
+﻿=== DVL OPERATOR OPERATIONAL REPORT ===
+
+Query : Filter Product on IDP (Sharded & Indexed)
+Database : DB1
+Sharding keys : IDP
+Index : IDP
+Algo : Shard / Index
+    Costs :
+        time : 0.000011 s
+        carbon footprint : 0.000000 g
+        price : 0.000000 Ç
+----------------------------------------
+Query : Filter Product on brand (Full Scan)
+Database : DB1
+Sharding keys : None
+Index : None
+Algo : Full scan
+    Costs :
+        time : 0.001057 s
+        carbon footprint : 0.002935 g
+        price : 0.000009 Ç
+----------------------------------------
+Query : Join Product and OrderLine on IDP (Collocated)
+Database : DB1
+Sharding keys : IDP, IDP
+Index : None
+Algo : Shard / Nested Loop
+    Costs :
+        time : 14.802082 s
+        carbon footprint : 41.116895 g
+        price : 0.123351 Ç
+----------------------------------------
+Query : Join Product and OrderLine on IDP (Local)
+Database : DB1
+Sharding keys : None
+Index : None
+Algo : Nested Loop
+    Costs :
+        time : 14802.082062 s
+        carbon footprint : 41.116895 g
+        price : 0.123351 Ç
+----------------------------------------
+Query : DB5: Filter Product (Embedded Orderlines)
+Database : DB5
+Sharding keys : IDP
+Index : IDP
+Algo : Shard / Index
+    Costs :
+        time : 0.148022 s
+        carbon footprint : 0.000411 g
+        price : 0.000001 Ç
+----------------------------------------
+Query : Q6 - 100 most ordered products (Aggregate + Join)
+Database : DB1
+Sharding keys : IDP, IDC
+Algo : Map/Reduce Aggregate + Shard Join
+    Costs :
+        time : 88.807304 s
+        carbon footprint : 246.686957 g
+        price : 0.740061 Ç
+----------------------------------------
+Query : Q7 - Most ordered product by customer 125 (Filter + Aggregate + Join)
+Database : DB1
+Sharding keys : IDP, IDC
+Algo : Shard Filter + M/R Aggregate + Shard Join
+    Costs :
+        time : 14.802106 s
+        carbon footprint : 41.116961 g
+        price : 0.123351 Ç
+----------------------------------------

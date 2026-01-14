@@ -1,0 +1,33 @@
+Submit a package with the aggregate operators which automatizes the previous steps:
+• Operator:
+– aggregate with sharding;
+– aggregate without sharding.
+• Each takes as input:
+– The targeted collection (link with the structure/object defined in the program / JSON Schema in Sec-
+tion 2.7);
+– The grouping key(s) (link with statistics is necessary);
+– The expected output format (involved keys);
+– An optional filtered key.
+J. Mali, N. Travers Practice works & Deliverables 9/12
+Chapter 4. Aggregate Queries
+4.2. HOMEWORK (2 days before next session)
+• Provides in output:
+– The number of output documents / distinct key values (and size);
+– The costs.
+• It should be recommended to provide functions that compute different type of costs which estimates the vol-
+ume of data, shuffle, reduce, etc.
+Test your program with the aggregate queries provided during the practice work (and the previous JSON Schema).
+As usual, you will be evaluated on your knowledge about the program you have developed during the next
+session. You have to be able to explain it.
+
+
+For each query, give:
+
+Database : DB1 - DB5
+Sharding keys : Involved sharding key(s)
+Index : Implied/Required index locally on each server
+Algo : Map/Reduce & Nested Loop & Shard / Index / Full scan
+Costs :
+    time :
+    carbon footprint :
+    price :

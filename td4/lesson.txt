@@ -1,0 +1,20 @@
+4.1 Aggregate Queries
+Q6 The 100 most ordered product names and price (sum of quantities).
+SELECT P.name, P.price, OL.NB
+FROM Product P JOIN (
+SELECT O.IDP, SUM(O.quantity) AS NB
+FROM OrderLine O
+GROUP BY O.IDP
+) OL ON P.IDP = C.IDP
+ORDER BY OL.NB DESC
+LIMIT 1;
+Q7 Name and price of the product most ordered by customer no. 125;
+SELECT P.name, P.price, OL.NB
+FROM Product P JOIN (
+SELECT O.IDP, SUM(O.quantity) AS NB
+FROM OrderLine O
+WHERE O.idClient = 125
+GROUP BY C.IDP
+) OL ON P.IDP = OL.IDP
+ORDER BY OL.NB DESC
+LIMIT 1;

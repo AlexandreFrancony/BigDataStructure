@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OrderLine",
+  "type": "object",
+  "properties": {
+    "IDOL": { "type": "string" },
+    "IDP": { "type": "string" },
+    "IDC": { "type": "string" },
+    "date": { "type": "string" },
+    "quantity": { "type": "integer" }
+  },
+  "required": ["IDOL", "IDP", "IDC", "date", "quantity"]
+}

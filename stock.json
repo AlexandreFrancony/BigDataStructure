@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Stock",
+  "type": "object",
+  "properties": {
+    "IDP": { "type": "string" },
+    "IDW": { "type": "string" },
+    "quantity": { "type": "integer" }
+  },
+  "required": ["IDP", "IDW", "quantity"]
+}
